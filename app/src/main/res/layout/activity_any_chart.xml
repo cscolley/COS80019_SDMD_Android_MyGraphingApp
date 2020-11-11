@@ -5,26 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="30dp"
-    tools:context=".MainActivity" >
+    tools:context=".AnyChartActivity">
 
     <TextView
-        android:id="@+id/MPAndroidChartTextView"
+        android:id="@+id/AnyChartTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/lib_name2"
         android:textSize="40dp"
-        android:textStyle="bold"
-        android:text="@string/lib_name1" />
+        android:textStyle="bold" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+    <com.anychart.anychart.AnyChartView
+        android:id="@+id/any_chart_view"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_label" />
+        android:layout_height="500dp"
+        tools:ignore="MissingClass" />
 
 </LinearLayout>

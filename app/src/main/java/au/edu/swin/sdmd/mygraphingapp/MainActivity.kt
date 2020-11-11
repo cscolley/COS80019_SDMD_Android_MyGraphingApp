@@ -1,9 +1,11 @@
 package au.edu.swin.sdmd.mygraphingapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.DashPathEffect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -19,83 +21,50 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
-var dates: ArrayList<String> = ArrayList()
-
-
 class MainActivity : AppCompatActivity() {
 
     lateinit var mChart: LineChart
-
+    var datesArrayList: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mChart = findViewById(R.id.chart)
-        mChart.setTouchEnabled(true)
-        mChart.setPinchZoom(true)
 
-        populateDateStringArrayList()
+        populateDatesArrayList()
 
         renderData()
 
-    }
+        makeInteractive()
 
-    fun populateDateStringArrayList() {
-        dates.add("01/10/2020")
-        dates.add("02/10/2020")
-        dates.add("03/10/2020")
-        dates.add("04/10/2020")
-        dates.add("05/10/2020")
-        dates.add("06/10/2020")
-        dates.add("07/10/2020")
-        dates.add("08/10/2020")
-        dates.add("09/10/2020")
-        dates.add("10/10/2020")
-        dates.add("11/10/2020")
-        dates.add("12/10/2020")
-        dates.add("13/10/2020")
-        dates.add("14/10/2020")
-        dates.add("15/10/2020")
+        val button1: Button = findViewById(R.id.button1)
+        button1.setOnClickListener {
+            val intent = Intent(this, AnyChartActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun renderData() {
-        var xAxis: XAxis = mChart.getXAxis()
+        val xAxis: XAxis = mChart.getXAxis()
         xAxis.enableGridDashedLine(10f, 10f, 10f)
-        xAxis.valueFormatter = MyXAxisValueFormatter()
+        xAxis.valueFormatter = MyXAxisValueFormatter(datesArrayList)
 
-        var yAxis: YAxis = mChart.axisLeft
+        val yAxis: YAxis = mChart.axisLeft
         yAxis.axisMaximum = 10f
         yAxis.axisMinimum = 0f
         yAxis.enableGridDashedLine(10f, 10f, 0f)
-        var yAxisRight: YAxis = mChart.axisRight
+        val yAxisRight: YAxis = mChart.axisRight
         yAxisRight.isEnabled = false
 
         setData()
-
     }
 
     fun setData() {
-        var scores: ArrayList<Entry> = ArrayList()
-        scores.add(Entry(0f, 6f))
-        scores.add(Entry(1f, 5f))
-        scores.add(Entry(2f, 4f))
-        scores.add(Entry(3f, 3f))
-        scores.add(Entry(4f, 4f))
-        scores.add(Entry(5f, 5f))
-        scores.add(Entry(6f, 8f))
-        scores.add(Entry(7f, 9f))
-        scores.add(Entry(8f, 2f))
-        scores.add(Entry(9f, 1f))
-        scores.add(Entry(10f, 2f))
-        scores.add(Entry(11f, 4f))
-        scores.add(Entry(12f, 5f))
-        scores.add(Entry(13f, 3f))
-        scores.add(Entry(14f, 4f))
-
-
 
         var set1: LineDataSet
+
+        val scores = populateScoreEntriesArrayList()
 
         if(mChart.data != null && mChart.data.dataSetCount > 0) {
             set1 = mChart.data.getDataSetByIndex(0) as LineDataSet
@@ -109,8 +78,8 @@ class MainActivity : AppCompatActivity() {
             set1.enableDashedHighlightLine(10f, 5f, 0f)
             set1.color = Color.DKGRAY
             set1.setCircleColor(Color.DKGRAY)
-            set1.lineWidth = 1f
-            set1.circleRadius = 3f
+            set1.lineWidth = 2f
+            set1.circleRadius = 5f
             set1.setDrawCircleHole(false)
             set1.setDrawFilled(true)
             set1.formLineWidth = 1f
@@ -121,29 +90,71 @@ class MainActivity : AppCompatActivity() {
             dataSets.add(set1)
             var data: LineData = LineData(dataSets)
             mChart.data = data
-
-
         }
+    }
+
+    fun populateScoreEntriesArrayList() : ArrayList<Entry> {
+        var scores: ArrayList<Entry> = ArrayList()
+
+        scores.add(Entry(0f, 5f))
+        scores.add(Entry(1f, 4f))
+        scores.add(Entry(2f, 4f))
+        scores.add(Entry(3f, 5f))
+        scores.add(Entry(4f, 6f))
+        scores.add(Entry(5f, 8f))
+        scores.add(Entry(6f, 9f))
+        scores.add(Entry(7f, 1f))
+        scores.add(Entry(8f, 2f))
+        scores.add(Entry(9f, 2f))
+        scores.add(Entry(10f, 3f))
+        scores.add(Entry(11f, 4f))
+        scores.add(Entry(12f, 3f))
+        scores.add(Entry(13f, 5f))
+        scores.add(Entry(14f, 4f))
+
+        return scores
+    }
+
+    fun populateDatesArrayList() {
+        datesArrayList.run {
+            add("01/10/2020")
+            add("02/10/2020")
+            add("03/10/2020")
+            add("04/10/2020")
+            add("05/10/2020")
+            add("06/10/2020")
+            add("07/10/2020")
+            add("08/10/2020")
+            add("09/10/2020")
+            add("10/10/2020")
+            add("11/10/2020")
+            add("12/10/2020")
+            add("13/10/2020")
+            add("14/10/2020")
+            add("15/10/2020")
+        }
+    }
+
+    fun makeInteractive() {
+        mChart.setTouchEnabled(true)
+        mChart.setPinchZoom(true)
     }
 }
 
-class MyXAxisValueFormatter : ValueFormatter() {
+class MyXAxisValueFormatter(var datesArrayList: ArrayList<String>) : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         var position: Int = value.roundToInt()
         val sdf = SimpleDateFormat("dd MMM")
 
-        println("dates.size = ${dates.size}")
-        println("position = $position")
-
-        return sdf.format(Date(getDateInMilliseconds(dates.get(position), "dd/MM/yyyy")))
+        return sdf.format(Date(getDateInMilliseconds(datesArrayList.get(position), "dd/MM/yyyy")))
     }
 
     fun getDateInMilliseconds(givenDateString: String, format: String) : Long {
         val sdf: SimpleDateFormat = SimpleDateFormat(format, Locale.UK)
         var timeInMilliseconds: Long = 1
         try {
-            var date: Date = sdf.parse(givenDateString);
+            val date: Date = sdf.parse(givenDateString);
             timeInMilliseconds = date.time
         } catch(pe: ParseException) {
             pe.printStackTrace()
